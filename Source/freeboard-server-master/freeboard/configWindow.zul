@@ -1,0 +1,153 @@
+<!-- 
+	Copyright 2012,2013 Robert Huitema robert@42.co.nz
+	
+	This file is part of FreeBoard. (http://www.42.co.nz/freeboard)
+	
+	FreeBoard is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	FreeBoard is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with FreeBoard.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<?page viewport="width=device-width, initial-scale=1.0, user-scalable=yes"?>
+<?page title="Configuration" contentType="text/html;charset=UTF-8"?>
+
+<zk>
+	<!--  -->
+	<window id="configWindow"
+		xmlns:w="http://www.zkoss.org/2005/zk/client" title="Configuration"
+		apply="nz.co.fortytwo.freeboard.zk.ConfigViewModel"
+		style="margin-left:auto;" mode="overlapped" visible="false"
+		minimizable="true">
+
+
+		<tabbox>
+			<tabs >
+				<tab label="Config" />
+				<tab label="Charts" />
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+					<grid hflex="min">
+						<columns>
+							<column label="" hflex="min" />
+							<column label="" hflex="min" />
+						</columns>
+						<rows>
+							<row hflex="min">
+								<label value="Device ports to scan:" />
+								<textbox id="portsToScan"
+									tooltiptext="In Linux (pi) '/dev/ttyUSB0,/dev/ttyUSB1,etc', in MS Windows 'COM1,COM2,COM3,etc'" />
+							</row>
+							<row hflex="min">
+								<label value="Device baud rate (speed):" />
+								<combobox id="portBaudRate"
+									tooltiptext="Applies to all ports. Freeboard default = '38400'. NMEA devices could be '4800', '9600',etc" >
+									<comboitem label="4800" value="4800"/>
+									<comboitem label="9600" value="9600"/>
+									<comboitem label="19200" value="19200"/>
+									<comboitem label="38400" value="38400"/>
+									<comboitem label="57200" value="57200"/>
+									</combobox>
+							</row>
+							<row hflex="min">
+								<label value="Wind Correction" />
+								<textbox id="cfgWindOffset"
+									tooltip="+/- degrees offset" />
+							</row>
+							<row hflex="min">
+								<label value="Compass Correction" />
+								<textbox id="cfgCompassOffset"
+									tooltip="+/- degrees offset" />
+							</row>
+							<row hflex="min">
+								<label value="Heading source" />
+								<radiogroup id="useRmcGroup" tooltiptext="Select RMC to show the heading from the GPS. It will be erratic at low speeds. Select HDG if you have an electronic compass for a more stable heading">
+									<radio id="useRmcRadio" label="RMC" value="true" />
+									<radio id="useHdgRadio" label="HDG" value="false" />
+								</radiogroup>
+							</row>
+							<row>
+								<hbox>
+									<button id="cfgSave" label="Save" height="38px" />
+									<button id="cfgCancel" height="38px" 
+										label="Cancel" />
+								</hbox>
+
+							</row>
+						</rows>
+					</grid>
+				</tabpanel>
+				<tabpanel>
+				<hbox align="center">
+					<listbox id="allCharts" hflex="min" vflex="true"
+						multiple="true" rows="10">
+						<listhead>
+							<listheader label="All Charts"/>
+						</listhead>
+						<template name="model">
+							<listitem>
+								<listcell label="${each}" />
+							</listitem>
+						</template>
+					</listbox>
+					
+					<vbox  spacing="10px" width="24px">
+						<image style="cursor:pointer" id="chooseAllBtn"
+							src="./js/img/control_stbd10_blue.png" />
+						<image style="cursor:pointer" id="chooseBtn"
+							src="./js/img/control_stbd_blue.png" />
+						<image style="cursor:pointer" id="removeBtn"
+							src="./js/img/control_port_blue.png" />
+						<image style="cursor:pointer" id="removeAllBtn"
+							src="./js/img/control_port10_blue.png" />
+					</vbox>
+					<listbox id="selectedCharts" hflex="min" vflex="true"
+						multiple="true" rows="10">
+						<listhead>
+							<listheader label="Displayed Charts">
+							</listheader>
+						</listhead>
+						<template name="model">
+							<listitem>
+								<listcell label="${each }" />
+							</listitem>
+						</template>
+					</listbox>
+
+					<vbox  spacing="10px" width="24px">
+						<image style="cursor:pointer" id="topBtn"
+							src="./js/img/control_up10_blue.png" />
+						<image style="cursor:pointer" id="upBtn"
+							src="./js/img/control_up_blue.png" />
+						<image style="cursor:pointer" id="downBtn"
+							src="./js/img/control_down_blue.png" />
+						<image style="cursor:pointer" id="bottomBtn"
+							src="./js/img/control_down10_blue.png" />
+					</vbox>
+					</hbox>
+					<hbox>
+					<radiogroup id="useHomeGroup" tooltiptext="Select Boat if the Pi is your DNS server, eg your standalone boat network. 
+						Select Home if you are putting the Pi onto an existing network like your home network.
+						The boat option is much faster, but to use it on an existing network requires DNS configuration, or you get errors - see install notes">
+						<radio id="useBoatRadio" label="Boat" value="false" />
+						<radio id="useHomeRadio" label="Home" value="true" />
+					</radiogroup>
+					<button id="chartSave" label="Save" />
+									<button id="chartCancel"
+										label="Cancel" />
+					</hbox>
+				</tabpanel>
+			</tabpanels>
+			
+		</tabbox>
+
+	</window>
+</zk>

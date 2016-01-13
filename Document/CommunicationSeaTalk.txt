@@ -1,0 +1,14 @@
+SeaTalk 
+Fournit des pilote automatique de bateau piloté via un bus SeaTalk
+http://www.raymarine.com
+
+
+Information protocole de communication Bus SeaTalk
+http://www.thomasknauf.de/seatalk.htm
+http://www.thomasknauf.de/rap/seatalk1.htm
+http://www.thomasknauf.de/rap/seatalk2.htm
+http://www.thomasknauf.de/rap/seatalk3.htm
+
+
+Projet existant d'interfacege de bus seatalk
+http://www.42.co.nz/freeboard/

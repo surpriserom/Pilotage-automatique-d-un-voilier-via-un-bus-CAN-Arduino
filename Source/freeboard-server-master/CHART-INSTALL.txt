@@ -1,0 +1,4 @@
+## How to import charts in FreeBoard
+
+There is a related project (freeboard-installer) which now handles the chart processing.
+Please see https://github.com/rob42/freeboard-installer
