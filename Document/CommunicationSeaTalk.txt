@@ -9,6 +9,11 @@ http://www.thomasknauf.de/rap/seatalk1.htm
 http://www.thomasknauf.de/rap/seatalk2.htm
 http://www.thomasknauf.de/rap/seatalk3.htm
 
-
 Projet existant d'interfacege de bus seatalk
 http://www.42.co.nz/freeboard/
+
+Exemple d'interface d'une telecomande de pilote automatique raymarine avec une arduino
+http://blog.arribasail.com/2015/08/seatalk-using-arduino.html
+
+Projet de librairie de communication bus seatalk
+https://github.com/FrancoisGautrais/SeaSerial
