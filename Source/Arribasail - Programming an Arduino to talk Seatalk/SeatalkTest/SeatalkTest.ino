@@ -9,10 +9,10 @@
 // Author: Alan Noble
 // Created: 23 August 2015 (with messages DBT, MSU, STW, SOG, HDG, AWA and AWS)
 
-#include "HardwareSerial.h"
 #include <string.h>
 #include <ctype.h>
 #include <stdarg.h>
+
 // macros
 #define M_TO_FT(m) ((m) * 3.2808399)
 
@@ -147,6 +147,8 @@ float Speed[] = {6.2, 6.4, 6.6, 6.3, 6.1}; // knots
 int Cnt = 0;
 
 void loop () {
+  
+  
   // NB: some delay is required after each datagram to allow the Seatalk bus to return HIGH
 
   // Mileage units = nm; Speed units = knots

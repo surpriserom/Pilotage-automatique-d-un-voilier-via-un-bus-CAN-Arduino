@@ -17,3 +17,14 @@ http://blog.arribasail.com/2015/08/seatalk-using-arduino.html
 
 Projet de librairie de communication bus seatalk
 https://github.com/FrancoisGautrais/SeaSerial
+
+Arduino configuration
+http://forum.arduino.cc/index.php?topic=54120.0
+http://sailboatinstruments.blogspot.fr/2011/02/seatalk-interface.html
+
+the 9bit serial for arduino thread:
+http://forum.arduino.cc/index.php?topic=91377.0
+
+
+Correction librarie hardwareSerial -> interruption déprécié
+http://www.nongnu.org/avr-libc/user-manual/group__avr__interrupts.html
