@@ -31,5 +31,5 @@ void loop()
   c = 0x08;
   Serial.write9(c, false); 
   
-  delay(1000);
+  delay(100);
 }
