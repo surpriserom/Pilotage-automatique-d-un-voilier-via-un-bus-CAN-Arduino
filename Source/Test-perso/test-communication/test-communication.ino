@@ -20,6 +20,7 @@ void loop()
   c = 0x80;
   Serial.write9(c, false);
 
+  Serial.write(0);
  delay(100);
  //apparent wind speed => 11 01 XX 0Y //(XX & 0x7F) + Y/10 Knots
   c = 0x11;
@@ -30,6 +31,8 @@ void loop()
   Serial.write9(c, false);
   c = 0x08;
   Serial.write9(c, false); 
+
   
-  delay(100);
+  Serial.write(0); 
+  delay(500);
 }
