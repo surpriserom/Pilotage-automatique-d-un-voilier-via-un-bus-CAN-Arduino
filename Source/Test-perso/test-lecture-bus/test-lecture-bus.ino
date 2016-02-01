@@ -14,7 +14,7 @@ void loop() {
   static bool newMessage = false;
   if(Serial1.available())
   {
-    c = Serial1.read9();
+    c = Serial1.read();
     if(c != 0)
     {
       newMessage = true;

@@ -601,6 +601,7 @@ size_t HardwareSerial::write(uint8_t c)
   return 1;
 }
 
+
 //9 bit seatalk protocol
 size_t HardwareSerial::write9(uint8_t c, bool p)
 {
@@ -608,7 +609,7 @@ size_t HardwareSerial::write9(uint8_t c, bool p)
   int i = (_tx_buffer->head + 1) % SERIAL_BUFFER_SIZE;
   while (i == _tx_buffer->tail);
   _tx_buffer->buffer[_tx_buffer->head] = c;
-  store_9((p==true)?1:0,_tx_buffer);
+  store_9( ((p==true)?1:0),_tx_buffer);
   _tx_buffer->head = i;
 
 
@@ -619,8 +620,6 @@ size_t HardwareSerial::write9(uint8_t c, bool p)
 
   return 1;
 }
-
-
 
 
 
