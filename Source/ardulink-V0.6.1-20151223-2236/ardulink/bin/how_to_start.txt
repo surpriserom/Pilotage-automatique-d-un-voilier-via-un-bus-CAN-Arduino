@@ -1,0 +1,18 @@
+HOW TO START ARDULINK'S APPLICATIONS
+
+Ardulink has several applications you can start. You can double click on the right jar file or run they with
+you system command line. Of course some applications need for parameters, so you have to start they from the
+command line.
+
+From your linux/windows/apple shell you can run these commands (from Ardulink's lib folder):
+
+java -jar ardulink-console-0.6.1.jar
+java -jar ardulink-networkproxyserver-0.6.1.jar
+java -jar ardulink-mail-0.6.1.jar
+java -jar ardulink-mqtt-0.6.1.jar
+
+
+The Network Proxy Server accepts a mandatory argument. Please run it without arguments to read the usage.
+
+The MQTT bridge accepts arguments. Please run it with -h option to read the usage.
+
