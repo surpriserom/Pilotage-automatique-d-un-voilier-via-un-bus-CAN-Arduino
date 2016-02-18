@@ -87,12 +87,12 @@ inline void store_char(unsigned int c, ring_buffer *buffer)
   }
 }
 
-#if !defined(USART0_RX_vect) && defined(USART1_RX_vect)
+#if !defined(USART0_RX_vect) && defined(USART0_RXC_vect)
 // do nothing - on the 32u4 the first USART is USART1
 #else
-#if !defined(USART_RX_vect) && !defined(SIG_USART0_RECV) && \
-    !defined(SIG_UART0_RECV) && !defined(USART0_RX_vect) && \
-	!defined(SIG_UART_RECV)
+#if !defined(USART_RX_vect) && !defined(USART0_RXC_vect) && \
+    !defined(UART0_RX_vect) && !defined(USART0_RX_vect) && \
+	!defined(USART_RXC_vect)
   #error "Don't know what the Data Received vector is called for the first UART"
 #else
   void serialEvent() __attribute__((weak));
@@ -100,14 +100,14 @@ inline void store_char(unsigned int c, ring_buffer *buffer)
   #define serialEvent_implemented
 #if defined(USART_RX_vect)
   SIGNAL(USART_RX_vect)
-#elif defined(SIG_USART0_RECV)
-  SIGNAL(SIG_USART0_RECV)
-#elif defined(SIG_UART0_RECV)
-  SIGNAL(SIG_UART0_RECV)
+#elif defined(USART0_RXC_vect)
+  SIGNAL(USART0_RXC_vect)
+#elif defined(UART0_RX_vect)
+  SIGNAL(UART0_RX_vect)
 #elif defined(USART0_RX_vect)
   SIGNAL(USART0_RX_vect)
-#elif defined(SIG_UART_RECV)
-  SIGNAL(SIG_UART_RECV)
+#elif defined(USART_RXC_vect)
+  SIGNAL(USART_RXC_vect)
 #endif
   {
   #if defined(UDR0)
@@ -124,18 +124,18 @@ inline void store_char(unsigned int c, ring_buffer *buffer)
 #endif
 #endif
 
-#if defined(USART1_RX_vect)
+#if defined(USART0_RXC_vect)
   void serialEvent1() __attribute__((weak));
   void serialEvent1() {}
   #define serialEvent1_implemented
-  SIGNAL(USART1_RX_vect)
+  SIGNAL(USART0_RXC_vect)
   {
   unsigned int c = (UCSR1B & _BV (RXB81)) << 7;
     c |=  UDR1;
     store_char(c, &rx_buffer1);
   }
-#elif defined(SIG_USART1_RECV)
-  #error SIG_USART1_RECV
+#elif defined(USART1_RXC_vect)
+  #error USART1_RXC_vect
 #endif
 
 #if defined(USART2_RX_vect) && defined(UDR2)
@@ -148,8 +148,8 @@ inline void store_char(unsigned int c, ring_buffer *buffer)
     c |=  UDR2;
     store_char(c, &rx_buffer2);
   }
-#elif defined(SIG_USART2_RECV)
-  #error SIG_USART2_RECV
+#elif defined(USART2_RX_vect)
+  #error USART2_RX_vect
 #endif
 
 #if defined(USART3_RX_vect) && defined(UDR3)
@@ -162,8 +162,8 @@ inline void store_char(unsigned int c, ring_buffer *buffer)
     c |=  UDR3;
     store_char(c, &rx_buffer3);
   }
-#elif defined(SIG_USART3_RECV)
-  #error SIG_USART3_RECV
+#elif defined(USART3_RX_vect)
+  #error USART3_RX_vect
 #endif
 
 void serialEventRun(void)
@@ -417,7 +417,7 @@ void HardwareSerial::flush()
     ;
 }
 
-size_t HardwareSerial::write9bit(uint16_t c)
+size_t HardwareSerial::write9(uint16_t c, bool cmd)
 {
   int i = (_tx_buffer->head + 1) % SERIAL_BUFFER_SIZE;
 	
@@ -426,8 +426,8 @@ size_t HardwareSerial::write9bit(uint16_t c)
   // ???: return 0 here instead?
   while (i == _tx_buffer->tail)
     ;
-	
-  _tx_buffer->buffer[_tx_buffer->head] = c;
+  //we add the leading 1 to be sure
+  _tx_buffer->buffer[_tx_buffer->head] = (cmd ? c|0x100 : c);
   _tx_buffer->head = i;
 	
   sbi(*_ucsrb, _udrie);
@@ -437,7 +437,7 @@ size_t HardwareSerial::write9bit(uint16_t c)
 
 size_t HardwareSerial::write(uint8_t c)
 {
-  return write9bit (c);
+  return write9(c);
 }
 
 HardwareSerial::operator bool() {

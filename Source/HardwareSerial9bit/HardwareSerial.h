@@ -24,6 +24,7 @@
 
 #ifndef HardwareSerial_h
 #define HardwareSerial_h
+#define SERIAL_9N1 1
 
 #include <inttypes.h>
 
@@ -62,10 +63,44 @@ class HardwareSerial : public Stream
     virtual int read(void);
     virtual void flush(void);
     virtual size_t write(uint8_t);
-    size_t write9bit(uint16_t);
+    virtual size_t write9(uint16_t, bool cmd = false); //put false as default as only leading byte is set at 0x1xx
     using Print::write; // pull in write(str) and write(buf, size) from Print
     operator bool();
-  
+	
+	//rewriting of write funct for different value
+	inline virtual size_t write(uint8_t c, bool b){return write9(c,b);};
+    //support 9 bit seatalk
+    inline size_t write(unsigned long n)
+    {
+       if(*_ucsrb & 0b100) //9bits ou erreurs
+          return  write9((uint8_t)n, (n & 0x100)!=0);
+       else
+          return write((uint8_t)n);
+    }
+
+    inline size_t write(long n)
+    {
+       if(*_ucsrb & 0b100) //9bits ou erreurs
+          return  write9((uint8_t)n, (n & 0x100)!=0);
+       else
+          return write((uint8_t)n);
+    }
+
+    inline size_t write(unsigned int n)
+    {
+       if(*_ucsrb & 0b100) //9bits ou erreurs
+          return  write9((uint8_t)n, (n & 0x100)!=0);
+       else
+          return write((uint8_t)n);
+    }
+
+    inline size_t write(int c)
+    {
+       if(*_ucsrb & 0b100) //9bits ou erreurs
+          return  write9((uint8_t)c, (c & 0x100)!=0);
+       else
+          return write((uint8_t)c );
+    }
 };
 
 #if defined(UBRRH) || defined(UBRR0H)
