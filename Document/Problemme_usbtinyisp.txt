@@ -1,12 +1,12 @@
-Des erreur de programmation de la carte arduino avec le programmateur usb tiniy usb peuve parfois survenir.
+Des erreurs de programmation de la carte arduino avec le programmateur USB tiniy USB puisse parfois survenir.
 L'erreur correspondante est la suivante:
 avrdude: verification error, first mismatch at byte 0x0400
 0xf8 != 0x2f
 avrdude: verification error; content mismatch
 
-L'adresse a laquel l'erreur survient peux différé, mais une des solutions au probleme et de réduire la vitesse de programmation
-du programmateur qui semble être régler à une vitesse trop importante sur les verision récente de l'ide arduino, pour modifier la fréquence
+L'adresse a laquelle l'erreur survient peux différé, mais une des solutions au problème est de réduire la vitesse de programmation
+du programmateur qui semble être réglé à une vitesse trop importante sur les versions récentes de l'ide arduino, pour modifier la fréquence
 il faut modifier le fichier suivant dans le dossier d'installation de l'ide arduino : 'Arduino-IDE'\hardware\arduino\avr\programmers.txt
 à la ligne 18: usbtinyisp.program.extra_params=
-Il faut ajouter l'option -B 32, ce qui est unefréquence très lente, ce qui permet de vérifier si le probleme vien bien de la configuration de 
-avrdude, cette option est conseillé ici => https://learn.adafruit.com/usbtinyisp/avrdude, normalement -B 10 devrait donné un résultat suffisament rapide et sans erreur.
+Il faut ajouter l'option -B 32, ce qui est une fréquence très lente, ce qui permet de vérifier si le problème vient bien de la configuration de 
+avrdude, cette option est conseillée ici => https://learn.adafruit.com/usbtinyisp/avrdude, normalement -B 10 devrait donné un résultat suffisamment rapide et sans erreur.

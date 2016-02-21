@@ -93,7 +93,12 @@ inline void store_char(unsigned int c, ring_buffer *buffer)
 #if !defined(USART_RX_vect) && !defined(USART0_RXC_vect) && \
     !defined(UART0_RX_vect) && !defined(USART0_RX_vect) && \
 	!defined(USART_RXC_vect)
-  #error "Don't know what the Data Received vector is called for the first UART"
+	#if defined(UART1_RX_vect) && defined(USART1_RX_vect)
+		//leaonardo use Serial1 not Serial  which is reserved for usb
+		#warning "leaonardo board"
+	#else
+		#error "Don't know what the Data Received vector is called for the first UART"
+	#endif
 #else
   void serialEvent() __attribute__((weak));
   void serialEvent() {}

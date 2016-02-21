@@ -24,7 +24,10 @@ http://sailboatinstruments.blogspot.fr/2011/02/seatalk-interface.html
 
 the 9bit serial for arduino thread:
 http://forum.arduino.cc/index.php?topic=91377.0
+pdf Atmel-7766-8-bit-AVR-ATmega16U4-32U4_Datasheet -> page 198 utilisation de la communication avec 9 bits
 
 
 Correction librarie hardwareSerial -> interruption déprécié
 http://www.nongnu.org/avr-libc/user-manual/group__avr__interrupts.html
+
+emplacement libbrairie hardware a remplacer Arduino-1.6.4\hardware\arduino\avr\cores\arduino
