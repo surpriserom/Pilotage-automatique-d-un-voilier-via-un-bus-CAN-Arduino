@@ -113,11 +113,11 @@ class HardwareSerial : public Stream
     unsigned char _rx_buffer[SERIAL_RX_BUFFER_SIZE];
     unsigned char _tx_buffer[SERIAL_TX_BUFFER_SIZE];
   public:
-    inline HardwareSerial(//ring_buffer *rx_buffer, ring_buffer *tx_buffer,
+    inline HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
       volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
       volatile uint8_t *ucsra, volatile uint8_t *ucsrb, volatile uint8_t *ucsrc,
-      volatile uint8_t *udr//,
-      //uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x, uint8_t ucsz2
+      volatile uint8_t *udr,
+      uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x, uint8_t ucsz2
 	  );
     void begin(unsigned long baud) { begin(baud, SERIAL_8N1); }
     void begin(unsigned long, uint8_t);

@@ -37,6 +37,48 @@
 // this is so I can support Attiny series and any other chip without a uart
 #if defined(HAVE_HWSERIAL0) || defined(HAVE_HWSERIAL1) || defined(HAVE_HWSERIAL2) || defined(HAVE_HWSERIAL3)
 
+struct ring_buffer
+{
+  unsigned int buffer[SERIAL_BUFFER_SIZE];
+  volatile unsigned int head;
+  volatile unsigned int tail;
+};
+
+#if defined(USBCON)
+  ring_buffer rx_buffer = { { 0 }, 0, 0};
+  ring_buffer tx_buffer = { { 0 }, 0, 0};
+#endif
+#if defined(UBRRH) || defined(UBRR0H)
+  ring_buffer rx_buffer  =  { { 0 }, 0, 0 };
+  ring_buffer tx_buffer  =  { { 0 }, 0, 0 };
+#endif
+#if defined(UBRR1H)
+  ring_buffer rx_buffer1  =  { { 0 }, 0, 0 };
+  ring_buffer tx_buffer1  =  { { 0 }, 0, 0 };
+#endif
+#if defined(UBRR2H)
+  ring_buffer rx_buffer2  =  { { 0 }, 0, 0 };
+  ring_buffer tx_buffer2  =  { { 0 }, 0, 0 };
+#endif
+#if defined(UBRR3H)
+  ring_buffer rx_buffer3  =  { { 0 }, 0, 0 };
+  ring_buffer tx_buffer3  =  { { 0 }, 0, 0 };
+#endif
+
+inline void store_char(unsigned int c, ring_buffer *buffer)
+{
+  int i = (unsigned int)(buffer->head + 1) % SERIAL_BUFFER_SIZE;
+
+  // if we should be storing the received character into the location
+  // just before the tail (meaning that the head would advance to the
+  // current location of the tail), we're about to overflow the buffer
+  // and so we don't write the character or advance the head.
+  if (i != buffer->tail) {
+    buffer->buffer[buffer->head] = c;
+    buffer->head = i;
+  }
+}
+
 // SerialEvent functions are weak, so when the user doesn't define them,
 // the linker just sets their address to 0 (which is checked below).
 // The Serialx_available is just a wrapper around Serialx.available(),

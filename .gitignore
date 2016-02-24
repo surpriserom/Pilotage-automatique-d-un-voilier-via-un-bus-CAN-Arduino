@@ -1,3 +1,6 @@
 desktop.ini
 /Source/JavaCommunicationArduino/nbproject/private/
 /Source/JavaCommunicationArduino/build/
+/Source/Serial-comm/com.embeddedunveiled.serial/nbproject/private/
+/Source/Serial-comm/com.embeddedunveiled.serial/build/
+/Source/Serial-comm/com.embeddedunveiled.serial/dist/

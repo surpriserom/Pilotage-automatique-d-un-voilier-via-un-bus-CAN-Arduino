@@ -1,0 +1,13 @@
+librairie communication par Serial
+-> java
+https://github.com/RishiGupta12/serial-communication-manager
+ou
+http://rxtx.qbang.org/wiki/index.php/Main_Page
+ -| application réalisant une communication java <-> arduino 
+  http://www.drdobbs.com/jvm/control-an-arduino-from-java/240163864
+
+-> python
+https://github.com/pyserial/pyserial
+
+ -| exemple application réalisan une communication python <-> arduino
+http://www.instructables.com/id/Arduino-Python-Communication-via-USB/?ALLSTEPS
