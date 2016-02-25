@@ -54,7 +54,9 @@ typedef uint16_t rx_buffer_index_t;
 typedef uint8_t rx_buffer_index_t;
 #endif
 
+
 // Define config for Serial.begin(baud, config);
+#define SERIAL_SEATALK 0x07
 #define SERIAL_5N1 0x00
 #define SERIAL_6N1 0x02
 #define SERIAL_7N1 0x04
@@ -63,7 +65,6 @@ typedef uint8_t rx_buffer_index_t;
 #define SERIAL_6N2 0x0A
 #define SERIAL_7N2 0x0C
 #define SERIAL_8N2 0x0E
-#define SERIAL_9N1 0x10
 #define SERIAL_5E1 0x20
 #define SERIAL_6E1 0x22
 #define SERIAL_7E1 0x24
@@ -84,8 +85,6 @@ typedef uint8_t rx_buffer_index_t;
 class HardwareSerial : public Stream
 {
   private:
-    //ring_buffer *_rx_buffer;
-    //ring_buffer *_tx_buffer;
     volatile uint8_t *_ubrrh;
     volatile uint8_t *_ubrrl;
     volatile uint8_t *_ucsra;
@@ -110,14 +109,13 @@ class HardwareSerial : public Stream
     // Don't put any members after these buffers, since only the first
     // 32 bytes of this struct can be accessed quickly using the ldd
     // instruction.
-    unsigned char _rx_buffer[SERIAL_RX_BUFFER_SIZE];
-    unsigned char _tx_buffer[SERIAL_TX_BUFFER_SIZE];
+    unsigned int _rx_buffer[SERIAL_RX_BUFFER_SIZE];
+    unsigned int _tx_buffer[SERIAL_TX_BUFFER_SIZE];
   public:
-    inline HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
+    inline HardwareSerial(
       volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
       volatile uint8_t *ucsra, volatile uint8_t *ucsrb, volatile uint8_t *ucsrc,
-      volatile uint8_t *udr,
-      uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x, uint8_t ucsz2
+      volatile uint8_t *udr
 	  );
     void begin(unsigned long baud) { begin(baud, SERIAL_8N1); }
     void begin(unsigned long, uint8_t);

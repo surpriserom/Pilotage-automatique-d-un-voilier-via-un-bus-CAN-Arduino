@@ -1,6 +1,7 @@
 SeaTalk 
 Fournit des pilote automatique de bateau piloté via un bus SeaTalk
 http://www.raymarine.com
+http://boatprojects.blogspot.fr/2012/12/beginners-guide-to-raymarines-seatalk.html
 
 
 Information protocole de communication Bus SeaTalk

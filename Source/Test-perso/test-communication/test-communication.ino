@@ -20,7 +20,7 @@ void loop()
   c = 0x80;
   Serial1.write9(c, false);
 
-// Serial.write(0);//pour la lecture du bus on attend un 0
+// Serial1.write(0);//pour la lecture du bus on attend un 0
  delay(100);
  //apparent wind speed => 11 01 XX 0Y //(XX & 0x7F) + Y/10 Knots
   c = 0x11;
@@ -32,7 +32,7 @@ void loop()
   c = 0x08;
   Serial1.write9(c, false); 
   
-//  Serial.write(0); 
+//  Serial1.write(0); 
   delay(100);
  
   delay(1000);

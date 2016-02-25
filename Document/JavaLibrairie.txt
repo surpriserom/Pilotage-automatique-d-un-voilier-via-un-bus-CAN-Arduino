@@ -1,3 +1,8 @@
 Serial Communication Java
 
 http://www.embeddedunveiled.com/
+
+CarteMarine
+http://www.openseamap.org/index.php?id=kartendownload&L=1
+Interface pour visionner des carte openstreemap avec api java
+http://wiki.openstreetmap.org/wiki/JMapViewer
