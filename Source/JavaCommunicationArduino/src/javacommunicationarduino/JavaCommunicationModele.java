@@ -9,20 +9,43 @@ import com.embeddedunveiled.serial.SerialComManager.PARITY;
 import com.embeddedunveiled.serial.SerialComManager.STOPBITS;
 
 /**
- *
+ * Classe permmettant de gérer la communication série
  * @author romain
  */
-
 public class JavaCommunicationModele 
 {
+    /**
+     * tableau de String contenant la liste des port série disponible
+     */
     private String[] portList;
+    /**
+     * la nom du port seelctionné
+     */
     private String currentPort;
+    /**
+     * boolean mémorisant si on est connecter a un port serie
+     */
     private boolean connected;
+    /**
+     * handle long représentant la connection serie
+     */
     private long connectionHandle;
+    /**
+     * scm -> serial com manager class
+     */
     private SerialComManager scm;
+    /**
+     * the serial baud rate
+     */
     private BAUDRATE baudeRate;
+    /**
+     * l'interface de communication jfram afficher
+     */
     private InterfaceCommunication interfaceComm;
-            
+     
+    /**
+     * builder - init default value
+     */
     public JavaCommunicationModele() 
     {
         try 
@@ -39,16 +62,29 @@ public class JavaCommunicationModele
 	}
     }
     
+    /**
+     * set InterfaceCom, utiliser pour initialise les data listener pour mettre a jour 
+     * les donné de la jframe
+     * @param inter 
+     */
     public void setInterfaceComm(InterfaceCommunication inter)
     {
         this.interfaceComm = inter;
     }
     
+    /**
+     * renvoi la liste des port de l'ordinateur
+     * @return String[] la liste des nom des port serie accesible de l'ordinateur
+     */
     public String[] getPortList()
     {
         return this.portList;
     }
     
+    /**
+     * retourne si une connection a été établie pour cette instance
+     * @return boolean
+     */
     public boolean isConnected()
     {
         //on test la connection en vérifiant si l'on était connecter et si le port est encore présent
@@ -78,6 +114,11 @@ public class JavaCommunicationModele
         return this.connected;
     }
     
+    /**
+     * Ouvre une connection serie avec les parametre selectionné
+     * @param connection entier représentant une case du tableau e la liste des connections
+     * @return String permet d'affiche un text pour savoir si la connection c'est effectier sans erreur
+     */
     public String openConnection(int connection)
     {
         try
@@ -109,6 +150,10 @@ public class JavaCommunicationModele
         return "Connection reussit au port "+this.currentPort;
     }
     
+    /**
+     * ferme un connection serie ouverte
+     * @return String retourne si la connection c'est fermé sans erreur
+     */
     public String closeConnection()
     {
         this.connected = false; // si erreur, la connection etait déja fermé
@@ -125,6 +170,11 @@ public class JavaCommunicationModele
         return "Connection terminer";
     }
     
+    /**
+     * rafraichit la liste des ports serie disponible sur l'ordinateur
+     * utile si le périphérique a été branché apres le lancement de l'application
+     * @return String retourne un text pour savoir si la fonction c'est executer sans erreur
+     */
     public String refreshPortList()
     {
         try
@@ -138,6 +188,11 @@ public class JavaCommunicationModele
         return "Liste de port Serie rafraichie";
     }
     
+    /**
+     * Envoi une donné depuis le pc vers le port serie
+     * @param data la trame de message envoyer
+     * @return String retourne si la fonction c'est executer correctement ou renvoi l'erreur
+     */
     public String sendData(String data)
     {
         try
@@ -151,6 +206,11 @@ public class JavaCommunicationModele
         return "Commande Envoyer";
     }
     
+    /**
+     * Définit le baudrate de la connection, modifie la valeur du baudera meme si la conection est déja établie
+     * @param value entier représentantant une valeur de connection arduino par defaut possible
+     * @return String retourne si la fonction c'est exécuter correctement ou renvoi l'erreur
+     */
     public String setBaudRate(int value)
     {
         String txt;

@@ -8,12 +8,18 @@ package javacommunicationarduino;
 import com.embeddedunveiled.serial.SerialComDataEvent;
 
 /**
- *
+ * Class that generate the jframe
  * @author romain
  */
-public class InterfaceCommunication extends javax.swing.JFrame {
-
+public class InterfaceCommunication extends javax.swing.JFrame
+{
+    /**
+     * model used to manage serial communication
+     */
     private JavaCommunicationModele model;
+    /**
+     * 
+     */
     public DataListener dataListener;
     
     /**
@@ -34,6 +40,9 @@ public class InterfaceCommunication extends javax.swing.JFrame {
         setPortList();
     }
     
+    /**
+     * set the port list in combo box liste of port
+     */
     public void setPortList()
     {
         for(String port: this.model.getPortList())
@@ -42,6 +51,10 @@ public class InterfaceCommunication extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Récupere les valeur reçus via le ports série et les affiche dans leur textfield respectif
+     * @param data String received from serial
+     */
     public void parseData(String data)
     {
         String[] parsedLine = data.split("\n");
@@ -59,9 +72,12 @@ public class InterfaceCommunication extends javax.swing.JFrame {
                             {
                                 if(parsed.length > 3)
                                 {
-                                    this.jTxtRoll.setText(parsed[1].split(":")[1]);
-                                    this.jTxtPitch.setText(parsed[2].split(":")[1]);
-                                    this.jTxtYaw.setText(parsed[3].split(":")[1]);
+                                    if(parsed[1].split(":").length == 2)
+                                        this.jTxtRoll.setText(parsed[1].split(":")[1]);
+                                    if(parsed[2].split(":").length == 2)
+                                        this.jTxtPitch.setText(parsed[2].split(":")[1]);
+                                    if(parsed[3].split(":").length == 2)
+                                        this.jTxtYaw.setText(parsed[3].split(":")[1]);
                                 }
                             }
                             catch(Exception e)
@@ -76,9 +92,12 @@ public class InterfaceCommunication extends javax.swing.JFrame {
                             {
                                 if(parsed.length > 3)
                                 {
-                                    this.jTxtX.setText(parsed[1].split(":")[1]);
-                                    this.jTxtY.setText(parsed[2].split(":")[1]);
-                                    this.jTxtZ.setText(parsed[3].split(":")[1]);
+                                    if(parsed[1].split(":").length == 2)
+                                        this.jTxtX.setText(parsed[1].split(":")[1]);
+                                    if(parsed[2].split(":").length == 2)
+                                        this.jTxtY.setText(parsed[2].split(":")[1]);
+                                    if(parsed[3].split(":").length == 2)
+                                        this.jTxtZ.setText(parsed[3].split(":")[1]);
                                 }
                             }
                             catch(Exception e)
@@ -136,7 +155,6 @@ public class InterfaceCommunication extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         jCB_ListPort.setMinimumSize(new java.awt.Dimension(90, 20));
         jCB_ListPort.setPreferredSize(new java.awt.Dimension(90, 20));
@@ -369,6 +387,10 @@ public class InterfaceCommunication extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * appelle la fonction pour connecter le port serie selectionné ou le déconnecter selon l'état du bouton
+     * @param evt 
+     */
     private void jTBConnectItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jTBConnectItemStateChanged
         if(this.jTBConnect.isSelected())
         {
@@ -388,12 +410,20 @@ public class InterfaceCommunication extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTBConnectItemStateChanged
 
+    /**
+     * appelle la fonction pour rafraichier la liste des port serie disponible
+     * @param evt 
+     */
     private void jBtnRefreshMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBtnRefreshMouseClicked
         this.jTxtAreaMsg.append(this.model.refreshPortList()+"\n");
         this.jCB_ListPort.removeAllItems();
         this.setPortList();
     }//GEN-LAST:event_jBtnRefreshMouseClicked
 
+    /**
+     * appelle la fonction pour changer le baudrate du port série lorsque l'on en a selectionné un autre
+     * @param evt 
+     */
     private void jCbtn_BaudRateItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCbtn_BaudRateItemStateChanged
         this.jTxtAreaMsg.append(this.model.setBaudRate(Integer.decode(this.jCbtn_BaudRate.getSelectedItem().toString()))+"\n");
     }//GEN-LAST:event_jCbtn_BaudRateItemStateChanged
