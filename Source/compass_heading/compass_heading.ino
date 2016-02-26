@@ -20,6 +20,10 @@ void setup()
  {
   volatile uint16_t c;
   //83  07  XX  00  00  00  00  00  80  00  00 Sent by course computer.
+  c = 0x83;
+  Serial1.write9(c, true);
+  c = Serial2.read();
+  Serial.print(c,HEX);
   for(i=0; i< 10; i++)
   {
     Serial1.write9(tab[i], false);
@@ -41,7 +45,12 @@ void loop()
   {
       volatile uint16_t c_lecture;
       c_lecture = Serial2.read();
+	  if (c_lecture >= 0x100)
+	  {
+		Serial.println("");
+	  }
       Serial.print(c_lecture,HEX);
+      Serial.print(' ');
   }
   //on emet toute les seconde et seulement quand le bus est libre
   if(timer_emit <= time && Serial2.available() ==  0)
