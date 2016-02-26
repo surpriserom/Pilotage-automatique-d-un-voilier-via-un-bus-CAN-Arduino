@@ -93,12 +93,7 @@ inline void store_char(unsigned int c, ring_buffer *buffer)
 #if !defined(USART_RX_vect) && !defined(USART0_RXC_vect) && \
     !defined(UART0_RX_vect) && !defined(USART0_RX_vect) && \
 	!defined(USART_RXC_vect)
-	#if defined(UART1_RX_vect) && defined(USART1_RX_vect)
-		//leaonardo use Serial1 not Serial  which is reserved for usb
-		#warning "leaonardo board"
-	#else
-		#error "Don't know what the Data Received vector is called for the first UART"
-	#endif
+	//	#error "Don't know what the Data Received vector is called for the first UART"
 #else
   void serialEvent() __attribute__((weak));
   void serialEvent() {}
@@ -192,7 +187,7 @@ void serialEventRun(void)
 // do nothing - on the 32u4 the first USART is USART1
 #else
 #if !defined(UART0_UDRE_vect) && !defined(UART_UDRE_vect) && !defined(USART0_UDRE_vect) && !defined(USART_UDRE_vect)
-  #error "Don't know what the Data Register Empty vector is called for the first UART"
+ // #error "Don't know what the Data Register Empty vector is called for the first UART"
 #else
 #if defined(UART0_UDRE_vect)
 ISR(UART0_UDRE_vect)
