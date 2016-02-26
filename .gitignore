@@ -1,4 +1,5 @@
 desktop.ini
+.~lock.*
 /Source/JavaCommunicationArduino/nbproject/private/
 /Source/JavaCommunicationArduino/build/
 /Source/Serial-comm/com.embeddedunveiled.serial/nbproject/private/
