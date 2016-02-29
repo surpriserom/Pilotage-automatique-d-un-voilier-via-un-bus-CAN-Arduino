@@ -93,3 +93,11 @@ void SeaTalk_API::send_bouton_p10(HardwareSerial * serial_write, HardwareSerial 
 	serial_write.write9(c ,false);
 }
 
+void SeaTalk_API::send_heading_rudder(HardwareSerial * serial_write, HardwareSerial * serial_read, int heading, int rudder)
+{
+	uint16_t c;
+	uint16_t vw;
+	c = 0x9C;
+	
+	
+}

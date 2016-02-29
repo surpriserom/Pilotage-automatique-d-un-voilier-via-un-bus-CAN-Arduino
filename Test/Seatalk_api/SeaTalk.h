@@ -22,6 +22,8 @@ class SeaTalk_API
 		void send_bouton_p1(HardwareSerial * serial_write, HardwareSerial * serial_read);
 		//+10
 		void send_bouton_p10(HardwareSerial * serial_write, HardwareSerial * serial_read);
+		
+		void send_heading_rudder(HardwareSerial * serial_write, HardwareSerial * serial_read, int heading, int rudder);
 }
 
 #endif
