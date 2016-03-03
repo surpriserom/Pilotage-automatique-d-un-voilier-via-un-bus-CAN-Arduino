@@ -48,14 +48,26 @@ void loop()
 
   if(Serial2.available())
   {
+	  /*
       volatile uint16_t c_lecture;
       c_lecture = Serial2.read();
-    if (c_lecture >= 0x100)
-    {
-    Serial.println("");
-    }
+		if (c_lecture >= 0x100)
+		{
+			Serial.println("");
+		}
       Serial.print(c_lecture,HEX);
       Serial.print(' ');
+	  */
+	  char buffer[23];
+	 seatalk_api. read_seatalk_input(&Serial2,buff);
+		Serial.write(buff);
+		Serial.println(" ");
+		if(buff[0] == SeaTalk_Heading_Rudder)
+		{
+			Serial.write("SeaTalk_Heading_Rudder");
+			Serial.println("");
+		}
+		
   }
   //on emet toute les seconde et seulement quand le bus est libre
   if(timer_emit <= time && Serial2.available() ==  0)

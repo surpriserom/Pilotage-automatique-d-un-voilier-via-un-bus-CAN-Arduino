@@ -119,7 +119,7 @@ void SeaTalk_API::send_heading_rudder(HardwareSerial * serial_write, HardwareSer
 
 //si la trame �mise par le bus seatalk correspond a "9C  U1  VW  RR" ou "84  U6  VW  XY 0Z 0M RR SS TT"
 //cette fonction permet de convertir les valeur re�us par le bus seatalk en entier.
-void SeaTalk_API::read_seatalk_heading_rudder(char buff[], int* heading, int* rudder)
+void SeaTalk_API::read_seatalk_heading_rudder(char buff[], boolean parsed, int* heading, int* rudder) // <- bugged char 8octet not 4 :/
 {
 	char parsed[7][5];
 	unsigned char buff_offset = 0, parsed_case = 0, parsed_offset = 0;
@@ -174,7 +174,7 @@ void SeaTalk_API::read_seatalk_heading_rudder(char buff[], int* heading, int* ru
 
 //on r�cupere une trame �mise par le bus s�rie qui contient 2 entier au format "9C 125 -2"
 //cette fonction permet de convertir la chaine e caractere re�us par le bus s�rie en entier
-void read_serial_heading_rudder(char buff[], int* heading, int* rudder)
+void SeaTalk_API::read_serial_heading_rudder(char buff[], int* heading, int* rudder)
 {
 	char parsed[3][5];
 	unsigned char buff_offset = 0, parsed_case = 0, parsed_offset = 0;
@@ -203,5 +203,41 @@ void read_serial_heading_rudder(char buff[], int* heading, int* rudder)
 	{
 		*heading = atoi(parsed[1]);
 		*rudder = atoi(parsed[2]);
+	}
+}
+
+void SeaTalk_API::read_seatalk_input(HardwareSerial * serial_read, char buff[])
+{
+	unsigned int i = 0;
+	unsigned int nb_char = 3; 
+	//tant que l'on a des char a lire ou retunre une fois que l'on a lue une commande
+	while((*serial_read).available())
+	{
+		uint16_t c = (*serial_read).read();
+		//si l'on detect une commande
+		if(c > 0x100)
+		{
+			buff[i] = (char) c;
+			i++;
+		}
+		//si l'on a commencé a ecrire une trame
+		if(i > 0)
+		{
+			if(i == 1)
+			{
+				//4 lower bit => nb additional bit
+				nb_char += c & 0x0F;
+			}
+			buff[i] = c;
+			i++;
+			//si l'on a lut tous les charactere de la trame
+			//on laisse le reste des charactere dans le buffer du bus serie de min 64char
+			//et on retourne avec la trame lut
+			if(i >= nb_char)
+			{
+				buff[i] = '\0';
+				return;
+			}
+		}
 	}
 }
