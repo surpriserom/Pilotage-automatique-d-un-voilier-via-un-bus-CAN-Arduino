@@ -117,63 +117,34 @@ void SeaTalk_API::send_heading_rudder(HardwareSerial * serial_write, HardwareSer
 	(*serial_write).write9((uint16_t)rudder & 0x00FF ,false);
 }
 
-//si la trame �mise par le bus seatalk correspond a "9C  U1  VW  RR" ou "84  U6  VW  XY 0Z 0M RR SS TT"
-//cette fonction permet de convertir les valeur re�us par le bus seatalk en entier.
-void SeaTalk_API::read_seatalk_heading_rudder(char buff[], boolean parsed, int* heading, int* rudder) // <- bugged char 8octet not 4 :/
+//si la trame emise par le bus seatalk correspond a "9C  U1  VW  RR" ou "84  U6  VW  XY 0Z 0M RR SS TT"
+//cette fonction permet de convertir les valeur recus par le bus seatalk en entier.
+void SeaTalk_API::read_seatalk_heading_rudder(char buff[], boolean parsed, int* heading, int* rudder)
 {
-	char parsed[7][5];
-	unsigned char buff_offset = 0, parsed_case = 0, parsed_offset = 0;
-	
-	//on r�cupere chaque donn� de la chaine de charactere dans une chaine diff�rente pour pouvoir convertire les donn�s
-	while(buff_offset < strlen(buff) && parsed_case < 7)
+	//la version precedente ne pouvait pas fonctionner, ce n'est pas une chaine de caractere mais des valeur hexadecimal qu'il faut oarser
+	//la trame traduit par "9C U1 VW RR" à l'affichage correspond a "0x9C 0xU1 0xVW 0xRR" sans espace
+	//il faut donc lire le premier char pour avoir la comande le deuxieme char pour avoir la taille ...
+	//la chaine étant stocke dans un char, le 9eme bit a ete tronque la commande n'a plus le 1 la valeur n'est donc plus par ex 0x19C mais 0x9C
+	if(buff[0] == 0x9C)
 	{
-		//si on detect un espace on change de tableau
-		if(buff[buff_offset] == ' ')
-		{
-			//on insert le caractere de terminaiseon de chaine
-			parsed[parsed_case][parsed_offset] = '\0';
-			//on change de ligne de tableau et on remet l'offset du second tableau a 0
-			parsed_case += 1;
-			parsed_offset = 0;
-		}
-		else
-		{
-			parsed[parsed_case][parsed_offset] = buff[buff_offset];
-			parsed_offset += 1;
-		}
-		buff_offset += 1;
-	}
-	//la derni�re chaine du tableau n'est pas terminer correctement
-	parsed[parsed_case][parsed_offset] = '\0';
-	
-	//on teste si l'on � r�cup�r� la trame correspondant a SeaTalk_Heading_Rudder
-	if(atoi(parsed[0]) == SeaTalk_Heading_Rudder)
-	{
-		uint16_t u, vw, rr;
-		u = (atoi(parsed[1])>>4) & 0x0F;
-		vw = atoi(parsed[2]);
-		rr= atoi(parsed[3]);
-		
-		*heading = (u&0x03) * 90 + vw * 2 + (((u&0xC0)>>2)&0x03);
-		*rudder = rr;
+		int u_low, u_hight , vw;
+		u_low = (buff[1] & 0x30) >> 4; // U correspond au 4 bits de poid fort du 2eme char, u_low correspond donc au 2 premier bit de u
+		u_hight = (buff[1] & 0xC0) >> 4; //la partie haute contien l'indication de direction, le msb, et le nombre bit a 1 est utiliser pour coder la valeur de heading
+		vw = buff[2];
+		*rudder = buff[3]; //a tester, la valeur etant en complement a 2, a voir comment est gerer la difference de precision la valeur  etant negative pour une barre a gauche
+		*heading = u_low * 90 + vw * 2 +  ( u_hight == 0 ? ( u_hight == 0x0C ? 2 : 1) :0);
 	}
 	else
 	{
-		if(atoi(parsed[0]) == SeaTalk_Autopilote_Heading_Rudder)
+		if(buff[0] == 0x84)
 		{
-			uint16_t u, vw, rr;
-			u = (atoi(parsed[1])>>4) & 0x0F;
-			vw = atoi(parsed[2]);
-			rr= atoi(parsed[6]);
 			
-			*heading = (u&0x03) * 90 + vw * 2 + (((u&0xC0)>>2)&0x03);
-			*rudder = rr;
 		}
 	}
 }
 
-//on r�cupere une trame �mise par le bus s�rie qui contient 2 entier au format "9C 125 -2"
-//cette fonction permet de convertir la chaine e caractere re�us par le bus s�rie en entier
+//on recupere une trame emise par le bus serie qui contient 2 entier au format "9C 125 -2"
+//cette fonction permet de convertir la chaine e caractere recus par le bus serie en entier
 void SeaTalk_API::read_serial_heading_rudder(char buff[], int* heading, int* rudder)
 {
 	char parsed[3][5];
@@ -210,7 +181,7 @@ void SeaTalk_API::read_seatalk_input(HardwareSerial * serial_read, char buff[])
 {
 	unsigned int i = 0;
 	unsigned int nb_char = 3; 
-	//tant que l'on a des char a lire ou retunre une fois que l'on a lue une commande
+	//tant que l'on a des char a lire ou retounre une fois que l'on a lue une commande
 	while((*serial_read).available())
 	{
 		uint16_t c = (*serial_read).read();
