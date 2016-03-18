@@ -125,9 +125,9 @@ void SeaTalk_API::read_seatalk_heading_rudder(char buff[], boolean parsed, int* 
 	//la trame traduit par "9C U1 VW RR" à l'affichage correspond a "0x9C 0xU1 0xVW 0xRR" sans espace
 	//il faut donc lire le premier char pour avoir la comande le deuxieme char pour avoir la taille ...
 	//la chaine étant stocke dans un char, le 9eme bit a ete tronque la commande n'a plus le 1 la valeur n'est donc plus par ex 0x19C mais 0x9C
+	int u_low, u_hight , vw;
 	if(buff[0] == 0x9C)
-	{
-		int u_low, u_hight , vw;
+	{//"9C  U1  VW  RR"
 		u_low = (buff[1] & 0x30) >> 4; // U correspond au 4 bits de poid fort du 2eme char, u_low correspond donc au 2 premier bit de u
 		u_hight = (buff[1] & 0xC0) >> 4; //la partie haute contien l'indication de direction, le msb, et le nombre bit a 1 est utiliser pour coder la valeur de heading
 		vw = buff[2];
@@ -137,8 +137,12 @@ void SeaTalk_API::read_seatalk_heading_rudder(char buff[], boolean parsed, int* 
 	else
 	{
 		if(buff[0] == 0x84)
-		{
-			
+		{ // "84  U6  VW  XY 0Z 0M RR SS TT"
+			u_low = (buff[1] & 0x30) >> 4;
+			u_hight = (buff[1] & 0xC0) >> 4;
+			vw = buff[2];
+			*rudder = buff[6];
+			*headingb = u_low * 90 + vw * 2 +  ( u_hight == 0 ? ( u_hight == 0x0C ? 2 : 1) :0);
 		}
 	}
 }
