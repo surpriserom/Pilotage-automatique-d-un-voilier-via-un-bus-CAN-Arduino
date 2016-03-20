@@ -9,9 +9,36 @@ SeaTalk_API::SeaTalk_API()
 }
 
 //on a besoin d'un pointeur ver le port serie utilise pour envoyer les valeurs
-void SeaTalk_API::send_bouton_value(HardwareSerial * serial_write, HardwareSerial * serial_read, int val)
+//buffout est un buffer suffisament gros pour enregistrer tout les message qui on circuler avant l'envoi du message
+void SeaTalk_API::send_bouton_value(HardwareSerial * serial_write, HardwareSerial * serial_read, int val, char buffout[])
 {
 	int i;
+	//on test que le port soit libre avant d'envoyer le message
+	//si message dans le buffer avaible != 0
+	if((*serial_read).available() != 0)
+	{
+		unsigned int readchar = 0;
+		//si il ne l'ai pas, on vide le cache de message et on attend 10/4800 s soi 2,08 millisecond
+		//pour que le bus soit considéré comme libre
+		unsigned char libre = 0;
+		while(!libre)
+		{
+			buffout[readchar] = (*serial_read).read(); //on lit un char du buffer pour le vider
+			readchar++;
+			//si plus de char dans le buffer, le bus est libre
+			if((*serial_read).available() == 0)
+			{
+				//on attend 2ms pour que le bus soit considerer comme libre
+				delay(2);
+				//si le bus est encore libre, on peux commencer a emetre
+				if((*serial_read).available() == 0)
+				{
+					libre = 1;
+					buffout[readchar] = '\0';
+				}
+			}
+		}
+	}
 	if(val < 0)
 	{
 		val = val * -1; //on convertie la valeur negative en positive
@@ -38,7 +65,7 @@ void SeaTalk_API::send_bouton_value(HardwareSerial * serial_write, HardwareSeria
 }
 
 //-1
-void SeaTalk_API::send_bouton_m1(HardwareSerial * serial_write, HardwareSerial * serial_read)
+int SeaTalk_API::send_bouton_m1(HardwareSerial * serial_write, HardwareSerial * serial_read)
 {
 	uint16_t c;
 	//on verifie qu'aucune donn� n'est en attente
@@ -51,9 +78,10 @@ void SeaTalk_API::send_bouton_m1(HardwareSerial * serial_write, HardwareSerial *
 	serial_write->write9(c ,false);
 	c = 0xFA;
 	serial_write->write9(c ,false);
+	
 }
 //-10
-void SeaTalk_API::send_bouton_m10(HardwareSerial * serial_write, HardwareSerial * serial_read)
+int SeaTalk_API::send_bouton_m10(HardwareSerial * serial_write, HardwareSerial * serial_read)
 {
 	uint16_t c;
 	//on verifie qu'aucune donn� n'est en attente
@@ -68,7 +96,7 @@ void SeaTalk_API::send_bouton_m10(HardwareSerial * serial_write, HardwareSerial 
 	serial_write->write9(c ,false);
 }
 //+1
-void SeaTalk_API::send_bouton_p1(HardwareSerial * serial_write, HardwareSerial * serial_read)
+int SeaTalk_API::send_bouton_p1(HardwareSerial * serial_write, HardwareSerial * serial_read)
 {
 	uint16_t c;
 	//on verifie qu'aucune donn� n'est en attente
@@ -83,7 +111,7 @@ void SeaTalk_API::send_bouton_p1(HardwareSerial * serial_write, HardwareSerial *
 	serial_write->write9(c ,false);
 }
 //+10
-void SeaTalk_API::send_bouton_p10(HardwareSerial * serial_write, HardwareSerial * serial_read)
+int SeaTalk_API::send_bouton_p10(HardwareSerial * serial_write, HardwareSerial * serial_read)
 {
 	uint16_t c;
 	//on verifie qu'aucune donn� n'est en attente
