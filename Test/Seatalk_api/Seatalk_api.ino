@@ -1,5 +1,3 @@
-
-
 #include "SeaTalk.h"
 
 const int led = 13;

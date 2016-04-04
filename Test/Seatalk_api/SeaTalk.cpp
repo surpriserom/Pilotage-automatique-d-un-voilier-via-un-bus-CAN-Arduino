@@ -1,5 +1,4 @@
-
-
+#include "Arduino.h"
 #include "SeaTalk.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,11 +9,11 @@ SeaTalk_API::SeaTalk_API()
 
 //on a besoin d'un pointeur ver le port serie utilise pour envoyer les valeurs
 //buffout est un buffer suffisament gros pour enregistrer tout les message qui on circuler avant l'envoi du message
-void SeaTalk_API::send_bouton_value(HardwareSerial * serial_write, HardwareSerial * serial_read, int val, char buffout[])
+int SeaTalk_API::send_bouton_value(HardwareSerial * serial_write, HardwareSerial * serial_read, int val, char buffout[])
 {
-	int i;
+	int i,j;
 	//on test que le port soit libre avant d'envoyer le message
-	//si message dans le buffer avaible != 0
+	//si message dans le buffer available != 0
 	if((*serial_read).available() != 0)
 	{
 		unsigned int readchar = 0;
@@ -44,22 +43,34 @@ void SeaTalk_API::send_bouton_value(HardwareSerial * serial_write, HardwareSeria
 		val = val * -1; //on convertie la valeur negative en positive
 		for(i=0; i < (val/10); i++)
 		{
-			send_bouton_m10(serial_write, serial_read);
+			if(send_bouton_m10(serial_write, serial_read) == -1)
+			{
+				return i*10;
+			}
 		}
-		for(i=0; i < (val%10); i++)
+		for(j=0; j < (val%10); j++)
 		{
-			send_bouton_m1(serial_write, serial_read);
+			if(send_bouton_m1(serial_write, serial_read) == -1)
+			{
+				return (i*10) + j;
+			}
 		}
 	}
 	else
 	{
 		for(i=0; i < (val/10); i++)
 		{
-			send_bouton_p10(serial_write, serial_read);
+			if(send_bouton_p10(serial_write, serial_read) == -1)
+      {
+        return i*10;
+      }
 		}
-		for(i=0; i < (val%10); i++)
+		for(j=0; j < (val%10); j++)
 		{
-			send_bouton_p1(serial_write, serial_read);
+			if(send_bouton_p1(serial_write, serial_read) == -1)
+     {
+        return (i*10) + j;
+     }
 		}
 	}
 }
@@ -67,63 +78,90 @@ void SeaTalk_API::send_bouton_value(HardwareSerial * serial_write, HardwareSeria
 //-1
 int SeaTalk_API::send_bouton_m1(HardwareSerial * serial_write, HardwareSerial * serial_read)
 {
-	uint16_t c;
-	//on verifie qu'aucune donn� n'est en attente
-	//if(serial_read.available() == 0) // probleme de ce tese est qu'il faille vid� la buffer -> que fait on des donn�s... si elle ne sont pas lut risque de d�bordement du buffer de 64Bytes
-	c = 0x86;
-	serial_write->write9(c ,true);
-	c = 0x11;
-	serial_write->write9(c ,false);
-	c = 0x05;
-	serial_write->write9(c ,false);
-	c = 0xFA;
-	serial_write->write9(c ,false);
+	uint16_t c[] = {0x86,0x11, 0x05, 0xFA};
+	volatile int i = 0;
+	//on envoi les 4 char de la trame
+	for(i=0; i< 4; i++)
+	{
+		serial_write->write9(c[i] , ( i == 0));
+	}
+	//on attend de reçevoire la trame que l'on a envoyer.
+	while(!serial_read->available()){};
+	for(i = 0; i < 4; i++)
+	{
+		volatile unsigned char r = serial_read->read();
+		if( r != c[i])
+		{
+			return -1;
+		}
+	}
+	return 0;
 	
 }
 //-10
 int SeaTalk_API::send_bouton_m10(HardwareSerial * serial_write, HardwareSerial * serial_read)
 {
-	uint16_t c;
-	//on verifie qu'aucune donn� n'est en attente
-	//if(serial_read.available() == 0)
-	c = 0x86;
-	serial_write->write9(c ,true);
-	c = 0x11;
-	serial_write->write9(c ,false);
-	c = 0x06;
-	serial_write->write9(c ,false);
-	c = 0xF9;
-	serial_write->write9(c ,false);
+	uint16_t c[] = {0x86,0x11, 0x06, 0xF9};
+	volatile int i = 0;
+	//on envoi les 4 char de la trame
+	for(i=0; i< 4; i++)
+	{
+		serial_write->write9(c[i] , ( i == 0));
+	}
+	//on attend de reçevoire la trame que l'on a envoyer.
+	while(!serial_read->available()){};
+	for(i = 0; i < 4; i++)
+	{
+		volatile unsigned char r = serial_read->read();
+		if( r != c[i])
+		{
+			return -1;
+		}
+	}
+	return 0;
 }
 //+1
 int SeaTalk_API::send_bouton_p1(HardwareSerial * serial_write, HardwareSerial * serial_read)
 {
-	uint16_t c;
-	//on verifie qu'aucune donn� n'est en attente
-	//if(serial_read.available() == 0)
-	c = 0x86;
-	serial_write->write9(c ,true);
-	c = 0x11;
-	serial_write->write9(c ,false);
-	c = 0x07;
-	serial_write->write9(c ,false);
-	c = 0xF8;
-	serial_write->write9(c ,false);
+	uint16_t c[] = {0x86,0x11, 0x07, 0xF8};
+	volatile int i = 0;
+	//on envoi les 4 char de la trame
+	for(i=0; i< 4; i++)
+	{
+		serial_write->write9(c[i] , ( i == 0));
+	}
+	//on attend de reçevoire la trame que l'on a envoyer.
+	while(!serial_read->available()){};
+	for(i = 0; i < 4; i++)
+	{
+		volatile unsigned char r = serial_read->read();
+		if( r != c[i])
+		{
+			return -1;
+		}
+	}
+	return 0;
 }
 //+10
 int SeaTalk_API::send_bouton_p10(HardwareSerial * serial_write, HardwareSerial * serial_read)
-{
-	uint16_t c;
-	//on verifie qu'aucune donn� n'est en attente
-	//if(serial_read.available() == 0)
-	c = 0x86;
-	serial_write->write9(c ,true);
-	c = 0x11;
-	serial_write->write9(c ,false);
-	c = 0x08;
-	serial_write->write9(c ,false);
-	c = 0xF7;
-	serial_write->write9(c ,false);
+{	
+	uint16_t c[] = {0x86,0x11, 0x08, 0xF7};
+	volatile int i = 0;
+	//on envoi les 4 char de la trame
+	for(i=0; i< 4; i++)
+	{
+		serial_write->write9(c[i] , ( i == 0));
+	}
+	//on attend de reçevoire la trame que l'on a envoyer.
+	while(!serial_read->available()){};
+	for(i = 0; i < 4; i++)
+	{
+		volatile unsigned char r = serial_read->read();
+		if( r != c[i])
+		{
+			return -1;
+		}
+	}
 }
 
 void SeaTalk_API::send_heading_rudder(HardwareSerial * serial_write, HardwareSerial * serial_read, int heading, int rudder)
@@ -147,7 +185,7 @@ void SeaTalk_API::send_heading_rudder(HardwareSerial * serial_write, HardwareSer
 
 //si la trame emise par le bus seatalk correspond a "9C  U1  VW  RR" ou "84  U6  VW  XY 0Z 0M RR SS TT"
 //cette fonction permet de convertir les valeur recus par le bus seatalk en entier.
-void SeaTalk_API::read_seatalk_heading_rudder(char buff[], boolean parsed, int* heading, int* rudder)
+void SeaTalk_API::read_seatalk_heading_rudder(char * buff, boolean parsed, int* heading, int* rudder)
 {
 	//la version precedente ne pouvait pas fonctionner, ce n'est pas une chaine de caractere mais des valeur hexadecimal qu'il faut oarser
 	//la trame traduit par "9C U1 VW RR" à l'affichage correspond a "0x9C 0xU1 0xVW 0xRR" sans espace
@@ -177,7 +215,7 @@ void SeaTalk_API::read_seatalk_heading_rudder(char buff[], boolean parsed, int* 
 
 //on recupere une trame emise par le bus serie qui contient 2 entier au format "9C 125 -2"
 //cette fonction permet de convertir la chaine e caractere recus par le bus serie en entier
-void SeaTalk_API::read_serial_heading_rudder(char buff[], int* heading, int* rudder)
+void SeaTalk_API::read_serial_heading_rudder(char * buff, int* heading, int* rudder)
 {
 	char parsed[3][5];
 	unsigned char buff_offset = 0, parsed_case = 0, parsed_offset = 0;
@@ -209,7 +247,7 @@ void SeaTalk_API::read_serial_heading_rudder(char buff[], int* heading, int* rud
 	}
 }
 
-void SeaTalk_API::read_seatalk_input(HardwareSerial * serial_read, char buff[])
+void SeaTalk_API::read_seatalk_input(HardwareSerial * serial_read, char * buff)
 {
 	unsigned int i = 0;
 	unsigned int nb_char = 3; 
