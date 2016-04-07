@@ -18,7 +18,7 @@ int SeaTalk_API::send_bouton_value(HardwareSerial * serial_write, HardwareSerial
 	{
 		unsigned int readchar = 0;
 		//si il ne l'ai pas, on vide le cache de message et on attend 10/4800 s soi 2,08 millisecond
-		//pour que le bus soit considéré comme libre
+		//pour que le bus soit considÃ©rÃ© comme libre
 		unsigned char libre = 0;
 		while(!libre)
 		{
@@ -85,7 +85,7 @@ int SeaTalk_API::send_bouton_m1(HardwareSerial * serial_write, HardwareSerial * 
 	{
 		serial_write->write9(c[i] , ( i == 0));
 	}
-	//on attend de reçevoire la trame que l'on a envoyer.
+	//on attend de reÃ§evoire la trame que l'on a envoyer.
 	while(!serial_read->available()){};
 	for(i = 0; i < 4; i++)
 	{
@@ -108,7 +108,7 @@ int SeaTalk_API::send_bouton_m10(HardwareSerial * serial_write, HardwareSerial *
 	{
 		serial_write->write9(c[i] , ( i == 0));
 	}
-	//on attend de reçevoire la trame que l'on a envoyer.
+	//on attend de reÃ§evoire la trame que l'on a envoyer.
 	while(!serial_read->available()){};
 	for(i = 0; i < 4; i++)
 	{
@@ -130,7 +130,7 @@ int SeaTalk_API::send_bouton_p1(HardwareSerial * serial_write, HardwareSerial * 
 	{
 		serial_write->write9(c[i] , ( i == 0));
 	}
-	//on attend de reçevoire la trame que l'on a envoyer.
+	//on attend de reÃ§evoire la trame que l'on a envoyer.
 	while(!serial_read->available()){};
 	for(i = 0; i < 4; i++)
 	{
@@ -152,7 +152,7 @@ int SeaTalk_API::send_bouton_p10(HardwareSerial * serial_write, HardwareSerial *
 	{
 		serial_write->write9(c[i] , ( i == 0));
 	}
-	//on attend de reçevoire la trame que l'on a envoyer.
+	//on attend de reÃ§evoire la trame que l'on a envoyer.
 	while(!serial_read->available()){};
 	for(i = 0; i < 4; i++)
 	{
@@ -164,6 +164,9 @@ int SeaTalk_API::send_bouton_p10(HardwareSerial * serial_write, HardwareSerial *
 	}
 }
 
+
+//9C  U1  VW  RR    Compass heading and Rudder position 
+//trame pour la direction du compas et de la barre, 9c id du message uvw pour la direction, 1 octet suplementaire, rr pour la barre
 void SeaTalk_API::send_heading_rudder(HardwareSerial * serial_write, HardwareSerial * serial_read, int heading, int rudder)
 {
 	uint16_t c;
@@ -175,7 +178,7 @@ void SeaTalk_API::send_heading_rudder(HardwareSerial * serial_write, HardwareSer
 	c = 0x9C;
 	(*serial_write).write9(c ,true);
 	
-	c = ((u_hight<<2 + u_low) << 4) + 0x06;
+	c = ((u_hight<<2 + u_low) << 4) + 0x01;
 	(*serial_write).write9(c ,false);
 	
 	(*serial_write).write9(vw , false);
@@ -188,9 +191,9 @@ void SeaTalk_API::send_heading_rudder(HardwareSerial * serial_write, HardwareSer
 void SeaTalk_API::read_seatalk_heading_rudder(char * buff, boolean parsed, int* heading, int* rudder)
 {
 	//la version precedente ne pouvait pas fonctionner, ce n'est pas une chaine de caractere mais des valeur hexadecimal qu'il faut oarser
-	//la trame traduit par "9C U1 VW RR" à l'affichage correspond a "0x9C 0xU1 0xVW 0xRR" sans espace
+	//la trame traduit par "9C U1 VW RR" Ã  l'affichage correspond a "0x9C 0xU1 0xVW 0xRR" sans espace
 	//il faut donc lire le premier char pour avoir la comande le deuxieme char pour avoir la taille ...
-	//la chaine étant stocke dans un char, le 9eme bit a ete tronque la commande n'a plus le 1 la valeur n'est donc plus par ex 0x19C mais 0x9C
+	//la chaine Ã©tant stocke dans un char, le 9eme bit a ete tronque la commande n'a plus le 1 la valeur n'est donc plus par ex 0x19C mais 0x9C
 	int u_low, u_hight , vw;
 	if(buff[0] == 0x9C)
 	{//"9C  U1  VW  RR"
@@ -220,7 +223,7 @@ void SeaTalk_API::read_serial_heading_rudder(char * buff, int* heading, int* rud
 	char parsed[3][5];
 	unsigned char buff_offset = 0, parsed_case = 0, parsed_offset = 0;
 	
-	//on r�cupere chaque donn� de la chaine de charactere dans une chaine diff�rente pour pouvoir convertire les donn�s
+	//on rï¿½cupere chaque donnï¿½ de la chaine de charactere dans une chaine diffï¿½rente pour pouvoir convertire les donnï¿½s
 	while(buff_offset < strlen(buff) && parsed_case < 3)
 	{
 		//si on detect un espace on change de tableau
@@ -255,30 +258,35 @@ void SeaTalk_API::read_seatalk_input(HardwareSerial * serial_read, char * buff)
 	while((*serial_read).available())
 	{
 		uint16_t c = (*serial_read).read();
-		//si l'on detect une commande
-		if(c > 0x100)
+		//si l'on detecte une commande
+    //si superieur a 0x200, on a des parasites
+		if(c > 0x100 && c < 0x200)
 		{
 			buff[i] = (char) c;
-			i++;
+      i++;
 		}
-		//si l'on a commencé a ecrire une trame
-		if(i > 0)
-		{
-			if(i == 1)
-			{
-				//4 lower bit => nb additional bit
-				nb_char += c & 0x0F;
-			}
-			buff[i] = c;
-			i++;
-			//si l'on a lut tous les charactere de la trame
-			//on laisse le reste des charactere dans le buffer du bus serie de min 64char
-			//et on retourne avec la trame lut
-			if(i >= nb_char)
-			{
-				buff[i] = '\0';
-				return;
-			}
-		}
+   else
+   {
+  		//si l'on a commence a ecrire une trame
+  		if(i > 0 && c < 0x100)
+  		{
+  			if(i == 1)
+  			{
+  				//4 lower bit => nb additional bit
+  				nb_char += c & 0x0000F;
+  			}
+  			buff[i] = (char) c;
+        i++;
+  			//si l'on a lut tous les charactere de la trame
+  			//on laisse le reste des charactere dans le buffer du bus serie de min 64char
+  			//et on retourne avec la trame lut
+  			if(i >= nb_char)
+  			{
+  				buff[i] = '\0';
+  				return;
+  			}
+  		}
+   }
 	}
 }
+

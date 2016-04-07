@@ -17,7 +17,7 @@ class SeaTalk_API
 	public:
     SeaTalk_API();
 		//on a besoin d'un pointeur ver le port serie utilise pour envoyer les valeurs, retourne la valeur envoyer,
-		//si la valeur de retour est diff�rente de la valeur envoyer, c'est qu'il y a eu une erreur de transmition
+		//si la valeur de retour est diffï¿½rente de la valeur envoyer, c'est qu'il y a eu une erreur de transmition
 		int send_bouton_value(HardwareSerial * serial_write, HardwareSerial * serial_read, int val, char buffout[]);
 		//-1
 		int send_bouton_m1(HardwareSerial * serial_write, HardwareSerial * serial_read);
@@ -37,3 +37,4 @@ class SeaTalk_API
 };
 
 #endif
+

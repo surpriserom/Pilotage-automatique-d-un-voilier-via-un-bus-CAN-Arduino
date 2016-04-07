@@ -18,7 +18,7 @@ void setup()
   pinMode(led, OUTPUT);
   digitalWrite(led, LOW);
 
-//on vérifie que le port est libre
+//on verifie que le port est libre
  if(Serial2.available() ==  0)
  {
   volatile uint16_t c;
@@ -45,8 +45,7 @@ void loop()
   volatile unsigned int time = millis();
 
   if(Serial2.available())
-  {
-	  /*
+  {/*
       volatile uint16_t c_lecture;
       c_lecture = Serial2.read();
 		if (c_lecture >= 0x100)
@@ -56,9 +55,13 @@ void loop()
       Serial.print(c_lecture,HEX);
       Serial.print(' ');
 	  */
-	  char buff[23];
-	 seatalk_api. read_seatalk_input(&Serial2,buff);
-		Serial.write(buff);
+	 char buff[230];
+   int i;
+	 seatalk_api.read_seatalk_input(&Serial2,buff);
+		for(i = 0; i < strlen(buff) ; i++)
+    {
+      Serial.print(buff[i],HEX);
+    }
 		Serial.println(" ");
 		if(buff[0] == SeaTalk_Heading_Rudder)
 		{
@@ -84,3 +87,5 @@ void loop()
    }
 
 }
+
+
