@@ -56,7 +56,7 @@ void loop()
       Serial.print(c_lecture,HEX);
       Serial.print(' ');
 	  */
-	  char buffer[23];
+	  char buff[23];
 	 seatalk_api. read_seatalk_input(&Serial2,buff);
 		Serial.write(buff);
 		Serial.println(" ");

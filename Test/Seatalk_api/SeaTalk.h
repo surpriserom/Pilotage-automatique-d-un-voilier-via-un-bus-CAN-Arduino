@@ -29,7 +29,7 @@ class SeaTalk_API
 		int send_bouton_p10(HardwareSerial * serial_write, HardwareSerial * serial_read);
 		
 		void send_heading_rudder(HardwareSerial * serial_write, HardwareSerial * serial_read, int heading, int rudder);
-		void read_seatalk_heading_rudder(char * buff, int* heading, int* rudder);
+		void read_seatalk_heading_rudder(char * buff, boolean parsed, int* heading, int* rudder);
 		void read_serial_heading_rudder(char * buff, int* heading, int* rudder);
 		//char we gonna loose 9bits, but not needed, we put in buf only command,
 		//buff have to be big enought to store a long seatalk tram => 22 char 3 mandatory and up to 18 more + end string char

@@ -208,7 +208,7 @@ void SeaTalk_API::read_seatalk_heading_rudder(char * buff, boolean parsed, int* 
 			u_hight = (buff[1] & 0xC0) >> 4;
 			vw = buff[2];
 			*rudder = buff[6];
-			*headingb = u_low * 90 + vw * 2 +  ( u_hight == 0 ? ( u_hight == 0x0C ? 2 : 1) :0);
+			*heading = u_low * 90 + vw * 2 +  ( u_hight == 0 ? ( u_hight == 0x0C ? 2 : 1) :0);
 		}
 	}
 }
