@@ -1,4 +1,5 @@
 #include "SeaTalk.h"
+#include <string.h>
 
 const int led = 13;
 boolean state = false;
@@ -25,16 +26,18 @@ void setup()
   //83  07  XX  00  00  00  00  00  80  00  00 Sent by course computer.
   c = 0x83;
   Serial1.write9(c, true);
-  c = Serial2.read();
-  Serial.print(c,HEX);
   for(i=0; i< 10; i++)
   {
     Serial1.write9(tab[i], false);
+  }
+  while(Serial2.available() <=  0){}; //wait for buffer to fill
+  while(Serial2.available() > 0)
+  {
     c = Serial2.read();
     Serial.print(c,HEX);
   }
  }
- Serial.println("");
+ Serial.println(" |-| ");
 }
 
 void loop() 
@@ -55,14 +58,15 @@ void loop()
       Serial.print(c_lecture,HEX);
       Serial.print(' ');
 	  */
-	 char buff[230];
-   int i;
-	 seatalk_api.read_seatalk_input(&Serial2,buff);
-		for(i = 0; i < strlen(buff) ; i++)
+	 unsigned char buff[230];
+   int i = 0;
+	 seatalk_api.read_seatalk_input(&Serial2,buff,&Serial);
+		while(buff[i] != '\0')
     {
-      Serial.print(buff[i],HEX);
+      //Serial.print(buff[i],HEX);
+      i++;
     }
-		Serial.println(" ");
+		//Serial.println("");
 		if(buff[0] == SeaTalk_Heading_Rudder)
 		{
 			Serial.write("SeaTalk_Heading_Rudder");
